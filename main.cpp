@@ -15,14 +15,14 @@ private:
     int age;
 
 public:
-    Person(string s, int a) : name(s), age(a) {};  //common attributes for Professor and Student 
+    Person(string s, int a) : name(s), age(a) {}; // common attributes for Professor and Student
     void show() const
     {
         cout << " Name: " << name << ", Age: " << age << "\n";
     }
 };
 
-class Semester    
+class Semester
 {
 private:
     int semenum;
