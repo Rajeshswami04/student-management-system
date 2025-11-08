@@ -22,7 +22,7 @@ public:
     }
 };
 
-class Semester
+class Semester // semester class starts
 {
 private:
     int semenum;
@@ -37,10 +37,10 @@ public:
     int getsemnumber() const { return semenum; }                               // return semester
 };
 
-void Semester::addsubject(const string &subject, double marks, int credits = 4)
-{ // default credits are 4
+void Semester::addsubject(const string &subject, double marks, int credits = 4) // default credits are 4
+{
 
-    if (marks < 0 || marks > 100)
+    if (marks < 0 || marks > 100) // validating marks
     {
         cout << "Invalid marks!\n";
         return;
@@ -60,7 +60,7 @@ bool Semester::clearbacklog(const string &subject, double newMarks, int newCredi
         cout << "Invalid marks or credits!\n";
         return false;
     }
-    auto it = subjectgrades.find(subject);
+    auto it = subjectgrades.find(subject); // finding subject in map through iterator
     if (it == subjectgrades.end())
     {
         cout << "Subject " << subject << " not found in semester " << semenum << ".\n";
@@ -84,13 +84,13 @@ double Semester::calculateSGPA() const
         double marks = entry.second.first;
         int credits = entry.second.second;
         double gp = (marks >= 40) ? floor(marks / 10) : 0.0;
-        totelnumber += gp * credits;
-        totelcredit += credits;
+        totelnumber += gp * credits; // weighted grade points
+        totelcredit += credits;      // total credits
     }
-    return totelcredit > 0 ? totelnumber / totelcredit : 0.0;
+    return totelcredit > 0 ? totelnumber / totelcredit : 0.0; // sgpa calculation
 }
 
-vector<string> Semester::getbacklog() const
+vector<string> Semester::getbacklog() const // getting all backlogged subjects for a specific stiudent
 {
     vector<string> backlogs;
     for (auto entry : subjectgrades)
@@ -101,7 +101,7 @@ vector<string> Semester::getbacklog() const
     return backlogs;
 }
 
-void Semester::displaydetail() const
+void Semester::displaydetail() const // displaying all details of semester for a student
 {
     cout << "Semester " << semenum << ":\n";
     for (auto entry : subjectgrades)
@@ -111,7 +111,7 @@ void Semester::displaydetail() const
     }
     cout << "  SGPA: " << fixed << setprecision(2) << calculateSGPA() << "\n";
     // fixed fixes totel number after decimal
-    auto bl = getbacklog();
+    auto bl = getbacklog(); // getting backlogged subjects
     if (!bl.empty())
     {
         cout << "  Backlogs: ";
@@ -123,24 +123,26 @@ void Semester::displaydetail() const
 
 // Semester class ends
 
-class Student : public Person
+class Student : public Person // Student class starts with inheritance of person class
 {
 private:
-    int roll_no;
-    vector<Semester> semesters;
+    int roll_no;                // unique id for student
+    vector<Semester> semesters; // all semesters of student at most 8
 
 public:
     Student(int roll_no, string name, int age) : Person(name, age), roll_no(roll_no) {}
-    bool addSemester();
+    bool addSemester(); // automatically adding semester
     void addsubjectTosemester(int sem, const string &subject, double marks, int credits);
+    // adding subject to specific semester and its marks,credits
     bool clearbackloginsem(int sem, const string &subject, double newMarks, int newCredits);
+    // clearing backlog in specific semester for a student
     double calculateCGPA() const;
     void displayacademicdetails() const;
-    int getroll() const { return roll_no; }
+    int getroll() const { return roll_no; } // for use in indirectly finding student in management system
 };
 
 // emplace_back helps us to creating object and pushing into at instant time
-// push only can push not create and push
+// push only can push not create and push while emplace_back create and push at same time
 
 bool Student::addSemester()
 {
@@ -188,7 +190,7 @@ bool Student::clearbackloginsem(int sem, const string &subject, double newMarks,
         return false;
     }
 }
-// calculating whole cgpa till current sem not for 2 as year
+// calculating whole cgpa till current semesters not for 2 as year
 
 double Student::calculateCGPA() const
 {
@@ -216,11 +218,13 @@ void Student::displayacademicdetails() const
         totalBl += sem.getbacklog().size();
     cout << "Total Backlogs: " << totalBl << "\n";
 }
+// Student class ends
 
+// Faculty class starts with inheritance of person class
 class Faculty : public Person
 {
 private:
-    string id;
+    string id; // unique id for faculty made from name , age , department
     string qualification;
     int grade;
     int exp_year;
@@ -231,17 +235,17 @@ public:
     Faculty(string name, int age, string q, int g, int e, string r, string d)
         : Person(name, age), qualification(q), grade(g), exp_year(e), research_area(r), department(d)
     {
-        id = name.substr(0, 3) + to_string(age) + department.substr(0, 3);
+        id = name.substr(0, 3) + to_string(age) + department.substr(0, 3); // deriving id
     }
     void showdetails() const
     {
         show();
-        cout << "id:" << id << endl;
-        cout << "qualifications:" << qualification << endl;
-        cout << "grade:" << grade << endl;
-        cout << "experience:" << exp_year << "yrs" << endl;
-        cout << "research area :" << research_area << endl;
-        cout << "department :" << department << endl;
+        cout << "Id:" << id << endl;
+        cout << "Qualifications:" << qualification << endl;
+        cout << "Grade:" << grade << endl;
+        cout << "Experience:" << exp_year << "yrs" << endl;
+        cout << "Research area :" << research_area << endl;
+        cout << "Department :" << department << endl;
     }
     void gradeupgrade(int g)
     {
@@ -257,15 +261,18 @@ public:
     }
     string getid() const
     {
-        return id;
+        return id; // helping to find faculty in management system
     }
 };
+// Faculty class ends
+
+// Management system class starts
 
 class Managementsystem
 {
 private:
-    vector<Student> students;
-    vector<Faculty> faculties;
+    vector<Student> students;  // all students
+    vector<Faculty> faculties; // all faculties
 
 public:
     // student stuff
@@ -309,6 +316,7 @@ public:
             cout << "------------------------\n";
         }
     }
+
     // Faculty stuff
 
     void addfaculty(string name, int age, string q, int g, int e, string r, string d)
@@ -376,9 +384,12 @@ public:
         }
     }
 };
+// Management system class ends
 
 int main()
 {
+    // making object of management system
+    // main loop for menu driven program
     Managementsystem sms;
     int choice;
     do
@@ -535,6 +546,16 @@ int main()
                 }
             }
         }
-    } while (choice != 11);
+    } while (choice != 11);// exit option
     return 0;
 }
+
+
+
+
+
+// main errors that we faced during implementation:
+//1.string handling while taking input with spaces
+//2.lambda function syntax errors
+//3.unknown infinite loop due to wrong condition in do while and string inputs
+//4 undefined behavior
